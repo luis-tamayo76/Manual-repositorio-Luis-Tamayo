@@ -1,0 +1,150 @@
+/* Paleta de colores vibrantes */
+:root {
+    --primary-color: #6a0dad; /* Púrpura */
+    --secondary-color: #ffc107; /* Amarillo */
+    --accent-color: #00bcd4; /* Cian */
+    --background-light: #f4f4f9;
+    --text-dark: #333;
+    --success-color: #4caf50; /* Verde */
+    --danger-color: #f44336; /* Rojo */
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+    color: var(--text-dark);
+}
+
+.calculator-container {
+    background-color: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 450px;
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.calculator-container:hover {
+    transform: translateY(-5px);
+}
+
+h1 {
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    color: #666;
+    margin-bottom: 25px;
+    font-style: italic;
+}
+
+/* Campos de entrada */
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--accent-color);
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 1.1em;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input[type="number"]:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 8px rgba(255, 193, 7, 0.5);
+    outline: none;
+}
+
+/* Botón de Cálculo */
+button {
+    background-color: var(--secondary-color);
+    color: var(--text-dark);
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    width: 100%;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #ffeb3b;
+    transform: scale(1.02);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* Resultados */
+.result-box {
+    margin-top: 30px;
+    padding: 20px;
+    border: 2px dashed var(--primary-color);
+    border-radius: 15px;
+    background-color: var(--background-light);
+}
+
+h2 {
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.4em;
+}
+
+#nota-requerida {
+    font-size: 2.5em;
+    font-weight: 900;
+    color: var(--accent-color);
+    margin: 5px 0 15px 0;
+    transition: color 0.5s;
+}
+
+/* Mensajes de estado */
+.message {
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    opacity: 0; /* Inicialmente oculto */
+    transition: opacity 0.5s, background-color 0.5s;
+    color: white; /* Texto blanco para mejor contraste en los mensajes */
+}
+
+.message.success {
+    background-color: var(--success-color);
+    opacity: 1;
+}
+
+.message.failure {
+    background-color: var(--danger-color);
+    opacity: 1;
+}
+
+/* Estilo para notas no válidas */
+.invalid {
+    border: 2px solid var(--danger-color) !important;
+}

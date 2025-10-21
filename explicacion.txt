@@ -1,0 +1,60 @@
+EXPLICACIÓN DE LOS CODIGOS(LUIS FERNANDO TAMAYO NAVARRO Y LEANDRO MANUEL NARVAEZ)
+
+El código completo de la calculadora esta unido en un solo archivo HTML para que funcione al abrirlo en cualquier navegador. Se divide en tres partes HTML la estructura, CSS el estilo y JavaScript la lógica.
+
+HTML La Estructura
+
+El HTML define los elementos de la calculadora. Imagínalo como el esqueleto.
+
+La parte principal son los dos campos de entrada (input type number), uno para el Primer Corte y otro para el Segundo Corte. Ambos estan limitados a números y tienen el atributo (onchange validateInput this). Esta linea es crucial porque le dice a la pagina Cada vez que cambien el valor aquí, llama a la función de JavaScript llamada (validateInput) para verificarlo.
+
+También tenemos un botón (button) que cuando se pulsa llama a la función principal (onclick calcularNota).
+
+Finalmente hay dos párrafos especiales (p) con id nota requerida y id mensaje final que están vacíos al inicio y sirven como las pantallas de resultado donde JavaScript escribirá la nota necesaria y el mensaje de felicitación o advertencia.
+
+
+CSS El Estilo
+
+El CSS se encarga de que la calculadora se vea bien. Es la decoración.
+
+Al inicio se definen las variables de color (root) para manejar fácilmente el purpura, el amarillo y los colores de éxito verde y peligro rojo.
+
+El body usa un linear (gradient) para darle ese fondo dinámico y colorido. Se centra la calculadora en la pantalla.
+
+La parte mas dinámica es el efecto que se logra con el selector (hover) en el contenedor de la calculadora y en el botón. Esto hace que los elementos se levanten ligeramente cuando el ratón pasa por encima, dándole un toque interactivo.
+
+El CSS también define las clases (success) y (failure). Estas clases no se usan directamente en el HTML, sino que JavaScript se encarga de aplicarlas al mensaje final cuando es necesario, cambiando el color de fondo a verde o rojo automáticamente.
+
+
+JavaScript La Lógica
+
+El JavaScript es el cerebro que hace los cálculos y las validaciones.
+
+1. La Validación (validateInput)
+Esta función es la encargada de que no haya notas negativas. Cuando detecta que el usuario intenta ingresar un numero menor a cero (value) menor que 0, inmediatamente establece el valor a 0.0 y muestra una alerta. También limita la nota máxima a 5.0. Esto cumple el requisito de no aceptar números negativos y mantiene las notas dentro del rango permitido de 0.0 a 5.0.
+
+2. El Calculo Principal (calcularNota)
+Esta función usa la formula basada en los porcentajes 33% para el Corte 1, 33% para el Corte 2 y 34% para el Corte 3 con una meta de 3.0.
+
+Primero calcula cuanto vale lo que ya se tiene
+
+Acumulado igual Nota 1 por 0.33 mas Nota 2 por 0.33
+
+Luego calcula cuanto falta para llegar al 3.0
+
+Faltante igual 3.0 menos Acumulado
+
+Finalmente calcula la nota que se necesita en el tercer corte
+
+Nota Requerida igual Faltante dividido entre 0.34
+
+3. Los Mensajes Especiales
+Después de calcular la nota requerida el código comprueba tres escenarios obligatorios
+
+Si la nota requerida es menor o igual a 0 El estudiante ya alcanzo el 3.0 o mas. Muestra 0.0 y un mensaje de éxito con color verde.
+Si la nota requerida es mayor que 5.0 Es imposible alcanzar el 3.0 porque la nota requerida excede el máximo de 5.0. Muestra la nota imposible y un mensaje de fracaso con color rojo.
+Si la nota esta entre 0.01 y 5.0 Muestra la nota exacta que se necesita para aprobar y un mensaje de animo.
+
+En estos pasos se utiliza (classList add success) o (classList add failure) para aplicar los estilos de colores del CSS al mensaje final.
+
+
