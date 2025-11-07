@@ -1,0 +1,155 @@
+Software Requirements Specification (SRS)
+Proyecto: Calculadora de Nota Requerida para 3.0
+Fecha: 2025-11-07
+
+1. Introducción
+1.1 Propósito
+El propósito de este documento SRS es especificar de manera completa y verificable los requisitos
+funcionales y no funcionales de la "Calculadora de Nota Requerida para 3.0", una aplicación web
+simple que ayuda a estudiantes y docentes a calcular la nota mínima necesaria en el tercer corte
+para alcanzar una nota final de 3.0.
+
+1.2 Alcance
+La aplicación recibe dos entradas (nota del primer y segundo corte), valida los datos y calcula la
+nota requerida en el tercer corte usando pesos predefinidos (33%, 33%, 34%). Ofrece retroalimentación
+visual y mensajes que indican si la meta ya está alcanzada, es alcanzable o no es alcanzable.
+
+1.3 Definiciones, Acrónimos y Abreviaturas
+- SRS: Software Requirements Specification
+- UI: User Interface (Interfaz de Usuario)
+- JS: JavaScript
+- HTML/CSS: Tecnologías de marcado y estilos
+- NOTA_META: 3.0
+
+1.4 Referencias
+- Archivos fuente: index.html, styles.css, script.js (proyecto actual)
+
+2. Descripción general
+2.1 Perspectiva del producto
+Producto independiente, implementado como una página web estática (frontend-only). No requiere
+servidor para el cálculo ni base de datos para funcionar (opcional: localStorage para persistencia
+en el navegador).
+
+2.2 Funciones del producto (resumen)
+- Validación de entradas (rango 0.0-5.0)
+- Cálculo de la nota requerida en el tercer corte
+- Mensajes claros (ya aprobado, posible, imposible)
+- Estilos visuales diferenciados por estado (éxito/fracaso)
+- Opcional: persistencia local (localStorage) si se habilita
+
+2.3 Usuarios previstos
+- Estudiantes que desean saber la nota necesaria.
+- Docentes que muestran ejemplos.
+- Administradores académicos para demostraciones rápidas.
+
+2.4 Restricciones
+- Valores aceptados: 0.0 a 5.0
+- Pesos fijos: 0.33, 0.33, 0.34 (configurables solo en código)
+- Aplicación cliente sin autenticación
+- Dependencia del navegador para la correcta ejecución de JavaScript
+
+2.5 Suposiciones y dependencias
+- El navegador soporta HTML5, CSS3 y ES5+.
+- No hay sincronización entre dispositivos (salvo localStorage).
+
+3. Requisitos específicos
+3.1 Requisitos funcionales (RF)
+RF-01: La UI debe permitir ingresar la nota del primer corte (campo numérico).
+RF-02: La UI debe permitir ingresar la nota del segundo corte (campo numérico).
+RF-03: El sistema debe validar cada entrada y corregirla si está fuera de rango.
+RF-04: El sistema debe mostrar un mensaje de error y destacar el campo Si la entrada es inválida.
+RF-05: Al presionar "Calcular", el sistema debe calcular la nota requerida usando la fórmula:
+       notaRequerida = (NOTA_META - (n1 * PESO_CORTE_1 + n2 * PESO_CORTE_2)) / PESO_CORTE_3
+RF-06: El sistema debe redondear el resultado a dos decimales para mostrarlo.
+RF-07: El sistema debe mostrar uno de tres estados: "Ya aprobado", "Alcanzable", "No alcanzable".
+RF-08: El sistema debe aplicar estilos visuales distintos para cada estado (clases CSS success/failure).
+RF-09: El sistema debe evitar divisiones por cero si PESO_CORTE_3 = 0 y tratar el resultado como no alcanzable.
+RF-10: El sistema debe ser usable con teclado y ser responsivo en pantallas pequeñas.
+
+3.2 Requisitos de interfaz de usuario (RI)
+RI-01: El campo input debe usar type="number" y atributos min, max, step.
+RI-02: Los elementos de resultado deben tener identificadores para acceso desde JS (#nota-requerida, #mensaje-final).
+RI-03: Mensajes de estado deben ser accesibles (aria-live o role="status" recomendado).
+
+3.3 Requisitos de datos (RD)
+RD-01: Valores numéricos de entrada entre 0.0 y 5.0.
+RD-02: Resultado mostrado con dos decimales.
+RD-03: (Opcional) Si se usa localStorage, la clave y formato deben documentarse.
+
+3.4 Requisitos no funcionales (RNF)
+RNF-01: Rendimiento: El cálculo debe realizarse en menos de 100 ms en navegadores modernos.
+RNF-02: Disponibilidad: La UI debe cargar correctamente sin error en navegadores modernos.
+RNF-03: Usabilidad: Interfaz clara, botón con texto descriptivo, mensajes legibles.
+RNF-04: Accesibilidad: Uso de etiquetas <label>, roles ARIA básicos y contraste suficiente.
+RNF-05: Mantenibilidad: Código JS modular y comentado; CSS usando variables para facilitar cambios de tema.
+RNF-06: Portabilidad: La aplicación debe funcionar en Chrome, Firefox, Edge y Safari recientes.
+
+3.5 Requisitos de seguridad (RS)
+RS-01: No se almacenan datos sensibles.
+RS-02: Validar y sanear cualquier dato mostrado para evitar inyección de HTML (contexto actual: no necesario, pero documentado).
+
+3.6 Requisitos de internacionalización (RI18N)
+RI18N-01: El documento HTML declara lang="es".
+RI18N-02: Texto visible puede extraerse para traducción futura.
+
+4. Casos de uso y escenarios
+4.1 Caso de uso: Calcular nota requerida
+Actor: Estudiante
+Precondición: El usuario abre la página y ve los campos.
+Flujo principal:
+  1. El usuario ingresa nota del primer corte.
+  2. El usuario ingresa nota del segundo corte.
+  3. El usuario presiona 'Calcular Nota Requerida'.
+  4. El sistema valida entradas.
+  5. El sistema calcula notaRequerida y muestra resultado.
+Postcondición: El usuario ve la nota requerida y un mensaje explicativo.
+
+4.2 Escenario alternativo: Entrada inválida
+  - Si algún campo está vacío o fuera de rango, el sistema muestra un mensaje y no realiza el cálculo.
+
+5. Criterios de aceptación
+CA-01: Ingresar 2.5 y 2.5 produce un resultado numérico coherente y mensaje correcto.
+CA-02: Ingresar valores fuera de rango se corrige y se notifica al usuario.
+CA-03: Resultado final se muestra con dos decimales y el color corresponde al estado.
+
+6. Diseño de la arquitectura
+6.1 Visión de alto nivel
+Frontend single-page: index.html (estructura), styles.css (presentacion), script.js (logica).
+No hay backend ni base de datos obligatorios.
+
+6.2 Componentes
+- Entrada: inputs (corte1, corte2)
+- Controlador: script.js que valida y calcula
+- Vista: resultado y mensajes actualizados dinámicamente
+
+7. Plan de pruebas
+7.1 Pruebas unitarias (manuales)
+- Validar parseo: ingresar '3.5', 'abc', '', '-1', '6'
+- Validar calculo: casos borde como (0,0), (5,5), (2.5,2.5)
+
+7.2 Pruebas de integración
+- Verificar interacción entre HTML, CSS y JS: al cambiar clases CSS, los estilos deben reflejarse.
+
+7.3 Pruebas de usabilidad
+- Revisar en dispositivos moviles; comprobar que inputs usan teclado numerico.
+
+7.4 Pruebas de accesibilidad
+- Verificar que etiquetas label estan asociadas a inputs y que mensajes se anuncian (aria-live).
+
+8. Mantenimiento y extensiones futuras
+- Parametrizar pesos para permitir distintas configuraciones.
+- Añadir almacenamiento remoto (autenticacion) para historicos.
+- Añadir exportacion de resultados en PDF.
+- Internacionalizacion (multilenguaje).
+- Mejorar interfaz con frameworks (React, Vue) si la app crece.
+
+9. Anexos
+9.1 Archivos fuente
+- index.html
+- styles.css
+- script.js
+
+9.2 Datos de contacto / Autor
+- Proyecto educativo, autor luis tamayo.
+
+FIN DEL SRS
