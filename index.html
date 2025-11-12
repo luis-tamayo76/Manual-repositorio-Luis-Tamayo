@@ -3,33 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Nota 3.0 🎓</title>
+    <title>Calculadora de Notas Académicas</title>
+    
+    <!-- Librería de Confeti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    
+    <!-- Enlace al CSS (asegúrate de tener el archivo styles.css en la misma carpeta) -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="calculator-container">
-        <h1>Calculadora de Meta 3.0</h1>
-        <p class="subtitle">Descubre qué nota necesitas en el Tercer Corte.</p>
+    <!-- Capas de fondo animadas -->
+    <div id="emoji-container"></div>
+    <div id="subject-background"></div>
+    <canvas id="particles-canvas"></canvas>
+    
+    <!-- Botón de tema oscuro/claro -->
+    <button id="theme-btn" onclick="toggleTheme()" title="Cambiar tema">🌙</button>
+    
+    <!-- Contenedor principal -->
+    <div class="container">
+        <h1>🎓 Calculadora de Notas 📊</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 30px; font-size: 16px;">
+            Descubre qué nota necesitas en el tercer corte para alcanzar tu meta
+        </p>
         
-        <div class="input-group">
-            <label for="corte1">Nota Primer Corte (33%):</label>
-            <input type="number" id="corte1" min="0.0" max="5.0" step="0.1" value="0.0" onchange="validateInput(this)" required>
+        <!-- Sección de información personal -->
+        <div style="margin-bottom: 25px;">
+            <label for="nombre-estudiante" style="display: block; margin-bottom: 8px; color: #4a0080; font-weight: 600;">
+                👤 Tu Nombre (Opcional)
+            </label>
+            <input 
+                type="text" 
+                id="nombre-estudiante" 
+                placeholder="Ej: Juan Pérez"
+                autocomplete="name"
+            >
         </div>
-
-        <div class="input-group">
-            <label for="corte2">Nota Segundo Corte (33%):</label>
-            <input type="number" id="corte2" min="0.0" max="5.0" step="0.1" value="0.0" onchange="validateInput(this)" required>
+        
+        <div style="margin-bottom: 25px;">
+            <label for="nombre-materia" style="display: block; margin-bottom: 8px; color: #4a0080; font-weight: 600;">
+                📚 Nombre de la Materia
+            </label>
+            <input 
+                type="text" 
+                id="nombre-materia" 
+                placeholder="Ej: Matemáticas, Física, Programación..."
+                autocomplete="off"
+            >
+            <small style="color: #666; font-size: 13px; display: block; margin-top: 5px;">
+                💡 El tema se adaptará automáticamente a la materia
+            </small>
         </div>
-
-        <button onclick="calcularNota()">Calcular Nota Requerida</button>
-
-        <div class="result-box" id="resultado-container">
-            <h2>Nota Requerida para 3.0</h2>
-            <p id="nota-requerida">--</p>
-            <p id="mensaje-final" class="message"></p>
+        
+        <!-- Sección de notas -->
+        <div style="margin-bottom: 25px;">
+            <label for="corte1" style="display: block; margin-bottom: 8px; color: #4a0080; font-weight: 600;">
+                📝 Nota del Corte 1 (33%)
+            </label>
+            <input 
+                type="number" 
+                id="corte1" 
+                placeholder="Ingresa tu nota del primer corte (0.0 - 5.0)"
+                step="0.1" 
+                min="0" 
+                max="5"
+                oninput="validateInput(this)"
+            >
+        </div>
+        
+        <div style="margin-bottom: 25px;">
+            <label for="corte2" style="display: block; margin-bottom: 8px; color: #4a0080; font-weight: 600;">
+                📝 Nota del Corte 2 (33%)
+            </label>
+            <input 
+                type="number" 
+                id="corte2" 
+                placeholder="Ingresa tu nota del segundo corte (0.0 - 5.0)"
+                step="0.1" 
+                min="0" 
+                max="5"
+                oninput="validateInput(this)"
+            >
+        </div>
+        
+        <div style="margin-bottom: 25px;">
+            <label for="meta-personalizada" style="display: block; margin-bottom: 8px; color: #4a0080; font-weight: 600;">
+                🎯 Nota Meta Final
+            </label>
+            <input 
+                type="number" 
+                id="meta-personalizada" 
+                placeholder="¿Qué nota final quieres obtener? (0.0 - 5.0)"
+                step="0.1" 
+                min="0" 
+                max="5"
+                value="3.0"
+                oninput="validateInput(this)"
+            >
+            <small style="color: #666; font-size: 13px; display: block; margin-top: 5px;">
+                💡 Por defecto es 3.0 (nota mínima para aprobar)
+            </small>
+        </div>
+        
+        <!-- Botón de cálculo -->
+        <button onclick="calcularNota()">
+            🧮 CALCULAR NOTA REQUERIDA
+        </button>
+        
+        <!-- Barra de progreso -->
+        <div id="progress-container" style="display: none;">
+            <div id="progress-fill"></div>
+            <p id="progress-text"></p>
+        </div>
+        
+        <!-- Contenedor de resultados -->
+        <div id="resultado-container" style="display: none;">
+            <div id="animation-container"></div>
+            
+            <h2 style="color: #4a0080; margin-top: 0;">
+                📌 Nota Requerida en el Corte 3 (34%):
+            </h2>
+            <div style="font-size: 4rem; font-weight: bold; margin: 20px 0;">
+                <span id="nota-requerida">0.0</span>
+            </div>
+            
+            <div id="mensaje-final" style="margin: 25px 0;"></div>
+            <div id="frase-motivacional" style="margin: 25px 0;"></div>
+        </div>
+        
+        <!-- Tabla de escenarios -->
+        <div id="scenarios-box" style="display: none;">
+            <h3>📊 Tabla de Escenarios Posibles</h3>
+            <p style="text-align: center; color: #666; margin-bottom: 15px;">
+                ¿Qué pasaría con diferentes notas en el tercer corte?
+            </p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nota Corte 3</th>
+                        <th>Nota Final</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="scenarios-body"></tbody>
+            </table>
+        </div>
+        
+        <!-- Historial de cálculos -->
+        <div id="history-box" style="display: none;">
+            <h3>📜 Historial de Cálculos</h3>
+            <p style="text-align: center; color: #666; margin-bottom: 15px;">
+                Últimos 10 cálculos realizados
+            </p>
+            <div id="history-list"></div>
+            <button onclick="clearHistory()" style="background: linear-gradient(135deg, #f44336, #e91e63); margin-top: 15px;">
+                🗑️ Limpiar Historial
+            </button>
+        </div>
+        
+        <!-- Información adicional -->
+        <div style="margin-top: 40px; padding: 20px; background: linear-gradient(135deg, #e3f2fd, #f3e5f5); border-radius: 15px; border: 2px solid rgba(106, 13, 173, 0.2);">
+            <h3 style="color: #4a0080; margin-top: 0;">ℹ️ Información Importante</h3>
+            <ul style="color: #333; line-height: 1.8; font-size: 14px;">
+                <li><strong>Pesos por corte:</strong> Corte 1 (33%), Corte 2 (33%), Corte 3 (34%)</li>
+                <li><strong>Escala de notas:</strong> De 0.0 a 5.0</li>
+                <li><strong>Nota mínima aprobatoria:</strong> 3.0</li>
+                <li><strong>Temas dinámicos:</strong> El fondo cambia según la materia que ingreses</li>
+                <li><strong>Historial:</strong> Se guardan tus últimos 10 cálculos</li>
+            </ul>
+        </div>
+        
+        <!-- Footer -->
+        <div style="margin-top: 30px; text-align: center; color: #666; font-size: 14px; padding-top: 20px; border-top: 2px solid #e0e0e0;">
+            <p>💜 Desarrollado con dedicación para estudiantes</p>
+            <p style="margin-top: 10px;">
+                <strong>Consejo:</strong> ¡Estudia con constancia y alcanzarás tus metas! 🚀
+            </p>
         </div>
     </div>
-
+    
+    <!-- Enlace al JavaScript (asegúrate de tener el archivo script.js en la misma carpeta) -->
     <script src="script.js"></script>
 </body>
 </html>
